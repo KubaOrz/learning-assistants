@@ -34,6 +34,14 @@ export class UserService {
         return this.userMapper.mapToDto(user);
     }
 
+    async findUserById(id: number) {
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user) {
+            throw new NotFoundException(`User with id ${id} doesn't exist`);
+        }
+        return user;
+    }
+
     async createNewUser(createUserRequest: CreateUserRequest): Promise<UserDTO> {
         const newUser = new User();
         newUser.email = createUserRequest.email;
