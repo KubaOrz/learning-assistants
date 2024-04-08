@@ -45,6 +45,18 @@ export class CourseService {
     return course;
   }
 
+  async getCourses(page: number = 1, limit: number = 10): Promise<Course[]> {
+    const skip = (page - 1) * limit;
+
+    return await this.courseRepository.find({
+      take: limit,
+      skip: skip,
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
   async isUserCourseAuthor(userId: number, courseId: number): Promise<boolean> {
     // TODO
     return true

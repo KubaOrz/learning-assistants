@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { CourseService } from '../services/course.service';
 import { Course } from '../model/course.entity';
 import AuthRequest from 'src/common/auth-request.type';
@@ -16,6 +16,14 @@ export class CourseController {
   @Get(':id/details')
   async getCourseWithDetails(@Param('id') id: number): Promise<Course> {
     return await this.courseService.getCourseWithChaptersById(id);
+  }
+
+  @Get()
+  async getCourses(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Course[]> {
+    return this.courseService.getCourses(page, limit);
   }
 
   @Post()
