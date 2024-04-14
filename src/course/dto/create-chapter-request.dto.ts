@@ -1,3 +1,3 @@
 export class CreateChapterRequest {
-    readonly title: string;
+  readonly title: string;
 }

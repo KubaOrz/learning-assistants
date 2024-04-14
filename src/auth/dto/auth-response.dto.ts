@@ -1,6 +1,6 @@
-import { UserDTO } from "src/user/dto/user.dto";
+import { UserDTO } from 'src/user/dto/user.dto';
 
 export class AuthenticationResponse {
-    user: UserDTO;
-    accessToken: string;
+  user: UserDTO;
+  accessToken: string;
 }

@@ -6,9 +6,9 @@ import { UserService } from './services/user.service';
 import { UserMapper } from './dto/user.mapper';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User])],
-    controllers: [UserController],
-    providers: [UserService, UserMapper],
-    exports: [UserService]
+  imports: [TypeOrmModule.forFeature([User])],
+  controllers: [UserController],
+  providers: [UserService, UserMapper],
+  exports: [UserService],
 })
 export class UserModule {}

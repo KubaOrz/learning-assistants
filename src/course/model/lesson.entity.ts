@@ -19,6 +19,9 @@ export class Lesson {
   content: string;
   // TODO add graphics
 
-  @ManyToOne(() => Chapter, chapter => chapter.lessons)
+  @Column()
+  lessonNumber: number;
+
+  @ManyToOne(() => Chapter, (chapter) => chapter.lessons)
   chapter: Chapter;
 }

@@ -1,6 +1,11 @@
 // guards/course-author.guard.ts
 
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import AuthRequest from 'src/common/auth-request.type';
 import { CourseService } from '../services/course.service';
@@ -22,10 +27,15 @@ export class CourseAuthorGuard implements CanActivate {
 
     const userId = +request.user.id;
 
-    const isCourseAuthor = await this.courseService.isUserCourseAuthor(userId, courseId);
+    const isCourseAuthor = await this.courseService.isUserCourseAuthor(
+      userId,
+      courseId,
+    );
 
     if (!isCourseAuthor) {
-      throw new UnauthorizedException('You are not authorized to perform this action on the course');
+      throw new UnauthorizedException(
+        'You are not authorized to perform this action on the course',
+      );
     }
 
     return true;

@@ -12,12 +12,9 @@ import { Lesson } from './model/lesson.entity';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Course, Chapter, Lesson]),
-    UserModule
-  ],
+  imports: [TypeOrmModule.forFeature([Course, Chapter, Lesson]), UserModule],
   controllers: [CourseController, ChapterController, LessonController],
   providers: [CourseService, ChapterService, LessonService],
-  exports: [CourseService]
+  exports: [CourseService],
 })
 export class CourseModule {}

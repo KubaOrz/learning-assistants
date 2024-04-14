@@ -12,9 +12,7 @@ import { CourseModule } from './course/course.module';
     AuthModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [
-        ConfigModule,
-      ],
+      imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DB_HOST'),
@@ -24,7 +22,7 @@ import { CourseModule } from './course/course.module';
         database: configService.get('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
-        lazy: true
+        lazy: true,
       }),
       inject: [ConfigService],
     }),

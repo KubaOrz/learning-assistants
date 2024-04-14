@@ -1,9 +1,9 @@
 import { Request } from 'express';
 
 type UserJwtPayload = {
-  id: number,
-}
+  id: number;
+};
 
-type AuthRequest = Request & { user: UserJwtPayload }
+type AuthRequest = Request & { user: UserJwtPayload };
 
 export default AuthRequest;

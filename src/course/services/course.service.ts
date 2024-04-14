@@ -15,8 +15,12 @@ export class CourseService {
     private userService: UserService,
   ) {}
 
-  async createCourse(createCourseDto: CreateCourseRequest, authorId: number): Promise<Course> {
-    const { title, shortDescription, thumbnail, longDescription } = createCourseDto;
+  async createCourse(
+    createCourseDto: CreateCourseRequest,
+    authorId: number,
+  ): Promise<Course> {
+    const { title, shortDescription, thumbnail, longDescription } =
+      createCourseDto;
     const author = await this.userService.findUserById(authorId);
 
     const course = new Course();
@@ -32,33 +36,41 @@ export class CourseService {
   async getCourseById(courseId: number): Promise<Course> {
     const course = await this.courseRepository.findOneBy({ id: courseId });
     if (!course) {
-        throw new NotFoundException(`Course with id ${courseId} doesn't exist`);
+      throw new NotFoundException(`Course with id ${courseId} doesn't exist`);
     }
     return course;
   }
 
   async getCourseWithChaptersById(courseId: number): Promise<Course> {
-    const course = await this.courseRepository.findOne({ where: { id: courseId }, relations: ['chapters'] });
+    const course = await this.courseRepository.findOne({
+      where: { id: courseId },
+      relations: ['chapters'],
+    });
     if (!course) {
-        throw new NotFoundException(`Course with id ${courseId} doesn't exist`);
+      throw new NotFoundException(`Course with id ${courseId} doesn't exist`);
     }
     return course;
   }
 
-  async getCourses(page: number = 1, limit: number = 10): Promise<Course[]> {
+  async getCourses(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ courses: Course[]; total: number }> {
     const skip = (page - 1) * limit;
 
-    return await this.courseRepository.find({
+    const [courses, total] = await this.courseRepository.findAndCount({
       take: limit,
       skip: skip,
       order: {
         createdAt: 'DESC',
       },
     });
+
+    return { courses, total };
   }
 
   async isUserCourseAuthor(userId: number, courseId: number): Promise<boolean> {
     // TODO
-    return true
+    return true;
   }
 }

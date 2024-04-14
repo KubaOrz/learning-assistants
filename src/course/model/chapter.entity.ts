@@ -1,6 +1,12 @@
 // src/courses/chapter.entity.ts
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Course } from './course.entity';
 import { Lesson } from './lesson.entity';
 
@@ -12,10 +18,10 @@ export class Chapter {
   @Column()
   title: string;
 
-  @ManyToOne(() => Course, course => course.chapters)
+  @ManyToOne(() => Course, (course) => course.chapters)
   course: Course;
 
-  @OneToMany(() => Lesson, lesson => lesson.chapter)
+  @OneToMany(() => Lesson, (lesson) => lesson.chapter)
   lessons: Lesson[];
 
   @Column({ default: 0 })
@@ -23,7 +29,10 @@ export class Chapter {
 
   calculateTotalDuration(): void {
     if (this.lessons && this.lessons.length > 0) {
-      this.totalDurationMinutes = this.lessons.reduce((total, lesson) => total + lesson.durationMinutes, 0);
+      this.totalDurationMinutes = this.lessons.reduce(
+        (total, lesson) => total + lesson.durationMinutes,
+        0,
+      );
     } else {
       this.totalDurationMinutes = 0;
     }
