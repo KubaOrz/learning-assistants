@@ -25,16 +25,5 @@ export class Chapter {
   lessons: Lesson[];
 
   @Column({ default: 0 })
-  totalDurationMinutes: number;
-
-  calculateTotalDuration(): void {
-    if (this.lessons && this.lessons.length > 0) {
-      this.totalDurationMinutes = this.lessons.reduce(
-        (total, lesson) => total + lesson.durationMinutes,
-        0,
-      );
-    } else {
-      this.totalDurationMinutes = 0;
-    }
-  }
+  totalDurationMinutes: number;  
 }

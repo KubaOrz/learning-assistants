@@ -2,8 +2,10 @@ import { Controller, Post, Body, Param, Get, Delete, HttpCode } from '@nestjs/co
 import { ChapterService } from '../services/chapter.service';
 import { Chapter } from '../model/chapter.entity';
 import { CreateChapterRequest } from '../dto/create-chapter-request.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('chapters')
+@ApiTags('Chapters')
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) {}
 

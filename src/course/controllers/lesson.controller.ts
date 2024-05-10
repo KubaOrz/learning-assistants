@@ -13,8 +13,10 @@ import { LessonService } from '../services/lesson.service';
 import { CreateLessonRequest } from '../dto/create-lesson-request.dto';
 import { Lesson } from '../model/lesson.entity';
 import { LessonPatchRequest } from '../dto/lesson-patch-request.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('lessons')
+@ApiTags('Lessons')
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 

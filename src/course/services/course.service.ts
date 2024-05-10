@@ -69,6 +69,16 @@ export class CourseService {
     return { courses, total };
   }
 
+  async updateCourseDurationInMinutes(courseId: number, difference: number) : Promise<Course> {
+    const course = await this.courseRepository.findOneBy({ id: courseId });
+    if (!course) {
+      throw new NotFoundException('Course not found!');
+    }
+    course.totalDurationMinutes += difference;
+    const updatedCourse = await this.courseRepository.save(course);
+    return updatedCourse;
+  }
+
   async isUserCourseAuthor(userId: number, courseId: number): Promise<boolean> {
     // TODO
     return true;

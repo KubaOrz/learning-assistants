@@ -14,8 +14,10 @@ import { Course } from '../model/course.entity';
 import AuthRequest from 'src/common/auth-request.type';
 import { CreateCourseRequest } from '../dto/create-course-request.dto';
 import { CoursePageResponse } from '../dto/course-page-response.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('courses')
+@ApiTags('Courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
