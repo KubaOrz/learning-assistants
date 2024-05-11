@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Param, Get, Delete, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Get,
+  Delete,
+  HttpCode,
+} from '@nestjs/common';
 import { ChapterService } from '../services/chapter.service';
 import { Chapter } from '../model/chapter.entity';
 import { CreateChapterRequest } from '../dto/create-chapter-request.dto';

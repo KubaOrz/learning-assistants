@@ -25,5 +25,5 @@ export class Chapter {
   lessons: Lesson[];
 
   @Column({ default: 0 })
-  totalDurationMinutes: number;  
+  totalDurationMinutes: number;
 }

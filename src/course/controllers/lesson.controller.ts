@@ -35,8 +35,14 @@ export class LessonController {
   }
 
   @Patch(':lessonId')
-  async updateLesson(@Param('lessonId') lessonId: number, @Body() lessonPatchData: LessonPatchRequest): Promise<Partial<Lesson>> {
-    const updatedValues = await this.lessonService.updateLesson(lessonId, lessonPatchData);
+  async updateLesson(
+    @Param('lessonId') lessonId: number,
+    @Body() lessonPatchData: LessonPatchRequest,
+  ): Promise<Partial<Lesson>> {
+    const updatedValues = await this.lessonService.updateLesson(
+      lessonId,
+      lessonPatchData,
+    );
     return updatedValues;
   }
 }

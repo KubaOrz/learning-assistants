@@ -69,7 +69,10 @@ export class CourseService {
     return { courses, total };
   }
 
-  async updateCourseDurationInMinutes(courseId: number, difference: number) : Promise<Course> {
+  async updateCourseDurationInMinutes(
+    courseId: number,
+    difference: number,
+  ): Promise<Course> {
     const course = await this.courseRepository.findOneBy({ id: courseId });
     if (!course) {
       throw new NotFoundException('Course not found!');

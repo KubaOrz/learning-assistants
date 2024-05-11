@@ -68,7 +68,10 @@ export class ChapterService {
 
       await queryRunner.manager.remove(Chapter, chapter);
 
-      await this.courseService.updateCourseDurationInMinutes(chapter.course.id, -chapter.totalDurationMinutes)
+      await this.courseService.updateCourseDurationInMinutes(
+        chapter.course.id,
+        -chapter.totalDurationMinutes,
+      );
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException('Failed to delete chapter');
@@ -77,13 +80,19 @@ export class ChapterService {
     }
   }
 
-  async updateDurationMinutes(chapterId: number, difference: number): Promise<void> {
+  async updateDurationMinutes(
+    chapterId: number,
+    difference: number,
+  ): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const chapter = await this.chapterRepository.findOne({ where: { id: chapterId }, relations: ['course'] });
+      const chapter = await this.chapterRepository.findOne({
+        where: { id: chapterId },
+        relations: ['course'],
+      });
       if (!chapter) {
         throw new NotFoundException('Chapter not found');
       }
@@ -91,7 +100,10 @@ export class ChapterService {
       chapter.totalDurationMinutes += difference;
 
       const updatedChapter = await queryRunner.manager.save(Chapter, chapter);
-      const course = await this.courseService.updateCourseDurationInMinutes(chapter.course.id, difference);
+      const course = await this.courseService.updateCourseDurationInMinutes(
+        chapter.course.id,
+        difference,
+      );
 
       await queryRunner.commitTransaction();
     } catch (e) {

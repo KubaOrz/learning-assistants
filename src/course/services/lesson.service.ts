@@ -33,23 +33,35 @@ export class LessonService {
 
     const createdLesson = await this.lessonRepository.save(newLesson);
 
-    await this.chapterService.updateDurationMinutes(createdLesson.chapter.id, createdLesson.durationMinutes);
+    await this.chapterService.updateDurationMinutes(
+      createdLesson.chapter.id,
+      createdLesson.durationMinutes,
+    );
     return createdLesson;
   }
 
   async deleteLesson(lessonId: number): Promise<void> {
-    const lessonToRemove = await this.lessonRepository.findOne({ where: { id: lessonId }, relations: ['chapter'] } );
+    const lessonToRemove = await this.lessonRepository.findOne({
+      where: { id: lessonId },
+      relations: ['chapter'],
+    });
 
     if (!lessonToRemove) {
       throw new BadRequestException(`Lesson with id ${lessonId} not found`);
     }
 
-    await this.chapterService.updateDurationMinutes(lessonToRemove.chapter.id, -lessonToRemove.durationMinutes)
+    await this.chapterService.updateDurationMinutes(
+      lessonToRemove.chapter.id,
+      -lessonToRemove.durationMinutes,
+    );
 
     await this.lessonRepository.remove(lessonToRemove);
   }
 
-  async updateLesson(lessonId: number, lessonPatchData: LessonPatchRequest): Promise<Lesson> {
+  async updateLesson(
+    lessonId: number,
+    lessonPatchData: LessonPatchRequest,
+  ): Promise<Lesson> {
     const lesson = await this.lessonRepository.findOneBy({ id: lessonId });
 
     if (!lesson) {
@@ -66,9 +78,13 @@ export class LessonService {
       lesson.content = lessonPatchData.content;
     }
     if (lessonPatchData.durationMinutes) {
-      const durationDifference = lessonPatchData.durationMinutes - lesson.durationMinutes;
+      const durationDifference =
+        lessonPatchData.durationMinutes - lesson.durationMinutes;
       lesson.durationMinutes = lessonPatchData.durationMinutes;
-      await this.chapterService.updateDurationMinutes(lesson.chapter.id, durationDifference);
+      await this.chapterService.updateDurationMinutes(
+        lesson.chapter.id,
+        durationDifference,
+      );
     }
     if (lessonPatchData.lessonNumber) {
       lesson.lessonNumber = lessonPatchData.lessonNumber;
