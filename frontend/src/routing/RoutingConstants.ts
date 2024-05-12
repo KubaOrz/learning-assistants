@@ -1,5 +1,7 @@
 export const RoutingConstants = {
     LOGIN: '/login',
     REGISTER: '/register',
-    STARTING: '/'
+    STARTING: '/',
+    AUTHENTICATED_ROOT: '/learn',
+    DASHBOARD: '/learn/dashboard'
 }

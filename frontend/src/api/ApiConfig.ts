@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { RegistrationResponse, UserRegistrationDetails } from './dto/registration/registration.types'
+import { AuthenticationData, SignInRequest, UserRegistrationDetails } from './dto/authentication/authentication.types'
 
 export const apiSchema = createApi({
     reducerPath: 'api',
@@ -7,9 +7,16 @@ export const apiSchema = createApi({
         baseUrl: 'http://localhost:3000'
     }),
     endpoints: (builder) => ({
-        createUser: builder.mutation<RegistrationResponse, UserRegistrationDetails>({
+        createUser: builder.mutation<AuthenticationData, UserRegistrationDetails>({
             query: (body) => ({
                 url: '/auth/register',
+                method: 'POST',
+                body
+            })
+        }),
+        signIn: builder.mutation<AuthenticationData, SignInRequest>({
+            query: (body) => ({
+                url: '/auth/login',
                 method: 'POST',
                 body
             })
@@ -17,4 +24,4 @@ export const apiSchema = createApi({
     })
 })
 
-export const { useCreateUserMutation } = apiSchema;
+export const { useCreateUserMutation, useSignInMutation } = apiSchema;

@@ -5,7 +5,12 @@ export type UserRegistrationDetails = {
     password: string
 }
 
-export type RegistrationResponse = {
+export type AuthenticationData = {
     user: UserRegistrationDetails,
     accessToken: string
+}
+
+export type SignInRequest = {
+    email: string;
+    password: string;
 }

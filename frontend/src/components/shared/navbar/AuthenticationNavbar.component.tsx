@@ -5,29 +5,41 @@ import { Button, Navbar } from "flowbite-react";
 
 const AuthenticationNavbar: FC = () => {
     return (
-        <Navbar fluid rounded>
-            <Navbar.Brand>
-                <Link to={RoutingConstants.STARTING}>
+        <Navbar fluid rounded className="bg-primary-light sticky top-0 z-10">
+            <Link to={RoutingConstants.STARTING}>
+                <Navbar.Brand>
                     <img src="src/assets/logo.jpeg" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
-                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Learning assistants</span> 
+                    <span className="self-center whitespace-nowrap text-xl font-semibold text-white">Learning assistants</span>
+                </Navbar.Brand>
+            </Link>
+
+            <div className="flex md:order-2 gap-2">
+                <Link to={RoutingConstants.REGISTER}>
+                    <Button color="primary">Dołącz do nas</Button>
+
                 </Link>
-            </Navbar.Brand>
-            <div className="flex md:order-2">
-                <Button className="bg-primary hover:bg-primary-hover">Get started</Button>
+                <Link to={RoutingConstants.LOGIN}>
+                    <Button color="secondary">Zaloguj się</Button>
+
+                </Link>
                 <Navbar.Toggle />
             </div>
             <Navbar.Collapse>
-                <Navbar.Link href="#" active>
-                    Home
-                </Navbar.Link>
                 <Navbar.Link>
-                    <Link to={RoutingConstants.LOGIN}>
-                        Zaloguj się
+                    <Link to={RoutingConstants.STARTING}>
+                        <span className="text-white hover:text-gray-800">Strona główna</span>
                     </Link>
                 </Navbar.Link>
-                <Navbar.Link href="#">Services</Navbar.Link>
-                <Navbar.Link href="#">Pricing</Navbar.Link>
-                <Navbar.Link href="#">Contact</Navbar.Link>
+                <Navbar.Link>
+                    <Link to={RoutingConstants.STARTING}>
+                        <span className="text-white hover:text-gray-800">Nasze kursy</span>
+                    </Link>
+                </Navbar.Link>
+                <Navbar.Link>
+                    <Link to={RoutingConstants.STARTING}>
+                        <span className="text-white hover:text-gray-800">O nas</span>
+                    </Link>
+                </Navbar.Link>
             </Navbar.Collapse>
         </Navbar>
     )

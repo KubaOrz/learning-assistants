@@ -12,6 +12,7 @@ export default {
       colors: {
         "primary": "#7e22ce",
         "primary-hover": "#6a1eac",
+        "primary-light": "#ab5bf0",
         "secondary": "#86efac",
         "secondary-hover": "#6edc8f",
         "accent": "#d946ef",

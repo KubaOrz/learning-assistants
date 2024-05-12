@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 import AuthenticationNavbar from "../navbar/AuthenticationNavbar.component";
 
-const UnauthenticatedOverlay: FC<{ children: ReactNode }> = ({ children }) => {
+const AuthenticatedOverlay: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <div className={'h-full w-full flex flex-col bg-base-100'}>
 			<AuthenticationNavbar />
@@ -12,4 +12,4 @@ const UnauthenticatedOverlay: FC<{ children: ReactNode }> = ({ children }) => {
     )
 }
 
-export default UnauthenticatedOverlay;
+export default AuthenticatedOverlay;

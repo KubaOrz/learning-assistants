@@ -3,25 +3,23 @@ import { useForm } from 'react-hook-form';
 import { z, object } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextInput, Button } from 'flowbite-react';
-import { useCreateUserMutation } from '../../../api/ApiConfig';
+import { useSignInMutation } from '../../../api/ApiConfig';
 
 const schema = object({
-    email: z.string().email(),
-    firstName: z.string().min(2),
-    lastName: z.string().min(2),
-    password: z.string().min(6),
+    email: z.string().email({ message: "Wprowadź adres email" }),
+    password: z.string().min(1, { message: "Wprowadź hasło" }),
 });
 
 type FormValues = z.infer<typeof schema>;
 
-const RegistrationForm = () => {
+const LoginForm = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
-    const [createUser] = useCreateUserMutation();
+    const [signIn] = useSignInMutation();
 
     const onSubmit = (data: FormValues) => {
-        createUser(data)
+        signIn(data)
         console.log(data);
     };
 
@@ -35,19 +33,6 @@ const RegistrationForm = () => {
                 helperText={errors.email?.message ? <span className="text-error">{errors.email.message}</span> : ''}
             />
             <TextInput 
-                placeholder='Imię' 
-                type="text" 
-                {...register('firstName')} 
-                color={errors.firstName?.message ? 'failure' : 'primary'} 
-                helperText={errors.firstName?.message ? <span className="text-error">{errors.firstName.message}</span> : ''}
-            />
-            <TextInput 
-                placeholder='nazwisko' 
-                type="text" {...register('lastName')} 
-                color={errors.lastName?.message ? 'failure' : 'primary'} 
-                helperText={errors.lastName?.message ? <span className="text-error">{errors.lastName.message}</span> : ''}
-            />
-            <TextInput 
                 placeholder='hasło' 
                 type="password" 
                 {...register('password')} 
@@ -59,4 +44,4 @@ const RegistrationForm = () => {
     );
 };
 
-export default RegistrationForm;
+export default LoginForm;
