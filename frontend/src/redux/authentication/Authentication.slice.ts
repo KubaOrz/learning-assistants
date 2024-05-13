@@ -1,27 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthenticationData } from '../../api/dto/authentication/authentication.types';
 
-// Początkowy stan slice'a
-const initialState: AuthenticationData | null = null;
+type AuthState = {
+  authData: AuthenticationData | null;
+}
 
-// Tworzenie slice'a
+const initialState: AuthState = {
+  authData: null
+}
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Akcja do ustawiania danych uwierzytelniających
-    setAuthenticationData: (state: AuthenticationData | null, action: PayloadAction<AuthenticationData | null>) => {
-      return action.payload;
+    setAuthenticationData: (state: AuthState, action: PayloadAction<AuthenticationData>) => {
+      state.authData = action.payload
     },
-    // Akcja do usuwania danych uwierzytelniających
-    clearAuthenticationData(state) {
-      return null;
+    clearAuthenticationData(state: AuthState) {
+      state.authData = null
     },
   },
 });
 
-// Eksport akcji
 export const { setAuthenticationData, clearAuthenticationData } = authSlice.actions;
 
-// Eksport reducer'a
 export default authSlice.reducer;
