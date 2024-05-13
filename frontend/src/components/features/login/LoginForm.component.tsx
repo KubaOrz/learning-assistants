@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { z, object } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextInput, Button } from 'flowbite-react';
-import { useSignInMutation } from '../../../api/ApiConfig';
+import { useSignInMutation } from '../../../api/api.service';
 import { useDispatch } from 'react-redux';
 import { setAuthenticationData } from '../../../redux/authentication/Authentication.slice';
 import { useNavigate } from 'react-router-dom';

@@ -3,7 +3,11 @@ import { useForm } from 'react-hook-form';
 import { z, object } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextInput, Button } from 'flowbite-react';
-import { useCreateUserMutation } from '../../../api/ApiConfig';
+import { useCreateUserMutation } from '../../../api/api.service';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setAuthenticationData } from '../../../redux/authentication/Authentication.slice';
+import { RoutingConstants } from '../../../routing/RoutingConstants';
 
 const schema = object({
     email: z.string().email(),
@@ -18,10 +22,16 @@ const RegistrationForm = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
-    const [createUser] = useCreateUserMutation();
+    const [createUser, { isLoading, isError }] = useCreateUserMutation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const onSubmit = (data: FormValues) => {
-        createUser(data)
+    const onSubmit = async (data: FormValues) => {
+        const { data: authData } = await createUser(data);
+        if (authData) {
+            dispatch(setAuthenticationData(authData));
+            navigate(RoutingConstants.DASHBOARD);
+        }
         console.log(data);
     };
 
@@ -54,7 +64,18 @@ const RegistrationForm = () => {
                 color={errors.password?.message ? 'failure' : 'primary'} 
                 helperText={errors.password?.message ? <span className="text-error">{errors.password.message}</span> : ''}
             />
-            <Button type="submit" color="primary">Zarejestruj się</Button>
+            <Button 
+                type="submit" 
+                color="primary"
+                isProcessing={isLoading}
+            >
+                Zarejestruj się
+            </Button>
+            {
+                isError ? (
+                    <span className="text-error">Wystapił błąd rejestracji</span>
+                ) : null
+            }
         </form>
     );
 };

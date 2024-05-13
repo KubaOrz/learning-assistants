@@ -14,9 +14,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setAuthenticationData: (state: AuthState, action: PayloadAction<AuthenticationData>) => {
+      sessionStorage.setItem('las_auth', JSON.stringify(action.payload));
       state.authData = action.payload
     },
     clearAuthenticationData(state: AuthState) {
+      sessionStorage.removeItem('las_auth');
       state.authData = null
     },
   },

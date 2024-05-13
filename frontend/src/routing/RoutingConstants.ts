@@ -3,5 +3,6 @@ export const RoutingConstants = {
     REGISTER: '/register',
     STARTING: '/',
     AUTHENTICATED_ROOT: '/learn',
-    DASHBOARD: '/learn/dashboard'
+    DASHBOARD: '/learn/dashboard',
+    COURSE_LIST: '/learn/courses'
 }

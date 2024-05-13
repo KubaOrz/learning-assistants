@@ -6,6 +6,7 @@ import RegisterPage from '../pages/register/RegisterPage.component';
 import StartingPage from '../pages/starting/StartingPage.component';
 import AuthenticatedOverlay from '../components/shared/authenticated-overlay/AuthenticatedOverlay.component';
 import Dashboard from '../pages/dashboard/Dashboard.component';
+import CourseListPage from '../pages/course-list/CourseListPage.component';
 
 export const routes = createBrowserRouter([
     {
@@ -41,6 +42,10 @@ export const routes = createBrowserRouter([
             {
                 path: RoutingConstants.DASHBOARD,
                 element: <Dashboard />
+            },
+            {
+                path: RoutingConstants.COURSE_LIST,
+                element: <CourseListPage />
             }
         ]
     }

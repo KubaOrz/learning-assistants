@@ -11,7 +11,9 @@ const AuthenticatedOverlay: FC<{ children: ReactNode }> = ({ children }) => {
 
     useEffect(() => {
         if (!authData) {
-            navigate(RoutingConstants.LOGIN);
+            if (!sessionStorage.getItem('las_auth')) {
+                navigate(RoutingConstants.LOGIN);
+            }
         }
     }, [authData])
 
