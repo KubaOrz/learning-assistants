@@ -7,6 +7,8 @@ import StartingPage from '../pages/starting/StartingPage.component';
 import AuthenticatedOverlay from '../components/shared/authenticated-overlay/AuthenticatedOverlay.component';
 import Dashboard from '../pages/dashboard/Dashboard.component';
 import CourseListPage from '../pages/course-list/CourseListPage.component';
+import CourseManagementPage from '../pages/course-management/CourseManagementPage.component';
+import CourseCreationDetails from '../pages/course-creation-details/CourseCreationDetails.component';
 
 export const routes = createBrowserRouter([
     {
@@ -46,6 +48,14 @@ export const routes = createBrowserRouter([
             {
                 path: RoutingConstants.COURSE_LIST,
                 element: <CourseListPage />
+            },
+            {
+                path: RoutingConstants.COURSE_MANAGEMENT,
+                element: <CourseManagementPage />
+            },
+            {
+                path: RoutingConstants.COURSE_CREATION_DETAILS,
+                element: <CourseCreationDetails />
             }
         ]
     }

@@ -24,8 +24,8 @@ export class Course {
   @Column()
   thumbnail: string;
 
-  @ManyToOne(() => User, { lazy: true })
-  author: Promise<User>;
+  @ManyToOne(() => User)
+  author: User
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -40,8 +40,8 @@ export class Course {
   @Column({ type: 'text' })
   longDescription: string;
 
-  @OneToMany(() => Chapter, (chapter) => chapter.course, { lazy: true })
-  chapters: Promise<Chapter[]>;
+  @OneToMany(() => Chapter, (chapter) => chapter.course)
+  chapters: Chapter[];
 
   @Column({ default: 0 })
   totalDurationMinutes: number;

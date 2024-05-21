@@ -1,16 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { AuthenticationData, SignInRequest, UserRegistrationDetails } from './dto/authentication/authentication.types'
-import { RootState } from '../redux/store';
-import { CoursesResponse } from './dto/courses/courses,types';
+import { Course, CoursesResponse, CreateCourseDTO } from './dto/courses/courses.types';
 
 export const apiSchema = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:3000',
         prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootState).authentication.authData?.accessToken;
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`);
+            const authData = sessionStorage.getItem('las_auth');
+            if (authData) {
+                const token = JSON.parse(authData).accessToken;
+                if (token) {
+                    headers.set('Authorization', `Bearer ${token}`);
+                }
             }
             return headers;
         },
@@ -34,12 +36,26 @@ export const apiSchema = createApi({
             query: () => ({
                 url: '/courses'
             })
+        }),
+        getCoursesByAuthor: builder.query<CoursesResponse, void>({
+            query: () => ({
+                url: `/courses/author/all`
+            })
+        }),
+        createNewCourse: builder.mutation<Course, CreateCourseDTO>({
+            query: (createCourseDTO) => ({
+                url: '/courses',
+                method: 'POST',
+                body: createCourseDTO
+            })
         })
     })
 })
 
-export const { 
-    useCreateUserMutation, 
+export const {
+    useCreateUserMutation,
     useSignInMutation,
-    useGetCoursesListQuery
+    useGetCoursesListQuery,
+    useCreateNewCourseMutation,
+    useGetCoursesByAuthorQuery
 } = apiSchema;

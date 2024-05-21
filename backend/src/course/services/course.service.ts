@@ -28,7 +28,7 @@ export class CourseService {
     course.shortDescription = shortDescription;
     course.thumbnail = thumbnail;
     course.longDescription = longDescription;
-    course.author = Promise.resolve(author);
+    course.author = author;
 
     return await this.courseRepository.save(course);
   }
@@ -65,6 +65,25 @@ export class CourseService {
         createdAt: 'DESC',
       },
     });
+
+    return { courses, total };
+  }
+
+  async getCoursesByAuthor(authorId: number, page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+
+    console.log('Whodzi tutaj');
+
+    const [courses, total] = await this.courseRepository.findAndCount({
+      where: {
+        author: { id: authorId }
+      },
+      take: limit,
+      skip: skip,
+      order: {
+        createdAt: 'DESC',
+      },
+    })
 
     return { courses, total };
   }
