@@ -20,3 +20,46 @@ export type CreateCourseDTO = {
     shortDescription: string;
     longDescription: string;
 }
+
+export type ChapterBase = {
+    id: number;
+    title: string;
+    totalDurationMinutes: number;
+}
+
+export type Chapter = ChapterBase & {
+    lessons: Lesson[];
+}
+
+export type NewChapterDTO = {
+    title: string;
+    courseId: number;
+}
+
+export type Lesson = LessonBase & {
+    id: number;
+}
+
+export type NewLessonDTO = {
+    chapterId: number;
+    LessonData: LessonBase
+}
+
+export type LessonBase = {
+    title: string;
+    durationMinutes: number;
+    videoUrl: string;
+    content: string;
+    lessonNumber: number;
+}
+
+export type CourseDetails = Course & {
+    chapters: Chapter[];
+}
+
+export type UpdateLessonOrderDTO = {
+    lessonIds: {
+        id: number;
+        lessonNumber: number;
+    }[]
+}

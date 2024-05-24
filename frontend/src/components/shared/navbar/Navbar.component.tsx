@@ -1,10 +1,12 @@
 import React, { FC } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { RoutingConstants } from "../../../routing/RoutingConstants";
 import { Button, Navbar } from "flowbite-react";
 import { LuUser } from "react-icons/lu";
 
 const AuthenticatedNavbar: FC = () => {
+    const location = useLocation();
+
     return (
         <Navbar fluid rounded className="bg-primary-light sticky top-0 z-10">
             <Link to={RoutingConstants.STARTING}>
@@ -30,17 +32,17 @@ const AuthenticatedNavbar: FC = () => {
             <Navbar.Collapse>
                 <Navbar.Link>
                     <Link to={RoutingConstants.STARTING}>
-                        <span className="text-white hover:text-gray-800">Strona główna</span>
+                        <span className={location.pathname.includes(RoutingConstants.STARTING) ? "text-gray-800" : "text-white hover:text-gray-800"}>Strona główna</span>
                     </Link>
                 </Navbar.Link>
                 <Navbar.Link>
-                    <Link to={RoutingConstants.STARTING}>
-                        <span className="text-white hover:text-gray-800">Nasze kursy</span>
+                    <Link to={RoutingConstants.COURSE_LIST}>
+                        <span className={location.pathname.includes(RoutingConstants.COURSE_LIST) ? "text-gray-800" : "text-white hover:text-gray-800"}>Nasze kursy</span>
                     </Link>
                 </Navbar.Link>
                 <Navbar.Link>
                     <Link to={RoutingConstants.COURSE_MANAGEMENT}>
-                        <span className="text-white hover:text-gray-800">Twoje kursy</span>
+                        <span className={location.pathname.includes(RoutingConstants.COURSE_MANAGEMENT) ? "text-gray-800" : "text-white hover:text-gray-800"}>Twoje kursy</span>
                     </Link>
                 </Navbar.Link>
             </Navbar.Collapse>

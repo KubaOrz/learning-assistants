@@ -22,7 +22,7 @@ export class ChapterService {
   async createChapter(
     courseId: number,
     createChapterRequest: CreateChapterRequest,
-  ): Promise<Chapter> {
+  ): Promise<Partial<Chapter>> {
     const course = await this.courseService.getCourseById(courseId);
 
     const newChapter = this.chapterRepository.create({
@@ -32,6 +32,7 @@ export class ChapterService {
 
     const savedChapter = await this.chapterRepository.save(newChapter);
 
+    delete savedChapter.course;
     return savedChapter;
   }
 

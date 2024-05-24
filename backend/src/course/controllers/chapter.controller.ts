@@ -21,7 +21,7 @@ export class ChapterController {
   async createChapter(
     @Param('courseId') courseId: number,
     @Body() createChapterRequest: CreateChapterRequest,
-  ): Promise<Chapter> {
+  ): Promise<Partial<Chapter>> {
     return this.chapterService.createChapter(courseId, createChapterRequest);
   }
 

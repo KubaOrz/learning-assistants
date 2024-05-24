@@ -1,12 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { AuthenticationData, SignInRequest, UserRegistrationDetails } from './dto/authentication/authentication.types'
-import { Course, CoursesResponse, CreateCourseDTO } from './dto/courses/courses.types';
+import { ChapterBase, Course, CourseDetails, CoursesResponse, CreateCourseDTO, Lesson, NewChapterDTO, NewLessonDTO, UpdateLessonOrderDTO } from './dto/courses/courses.types';
 
 export const apiSchema = createApi({
     reducerPath: 'api',
+    tagTypes: ['CourseDetails', 'LessonDetails'],
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:3000',
-        prepareHeaders: (headers, { getState }) => {
+        prepareHeaders: (headers) => {
             const authData = sessionStorage.getItem('las_auth');
             if (authData) {
                 const token = JSON.parse(authData).accessToken;
@@ -25,6 +26,7 @@ export const apiSchema = createApi({
                 body
             })
         }),
+
         signIn: builder.mutation<AuthenticationData, SignInRequest>({
             query: (body) => ({
                 url: '/auth/login',
@@ -32,23 +34,71 @@ export const apiSchema = createApi({
                 body
             })
         }),
+
         getCoursesList: builder.query<CoursesResponse, void>({
             query: () => ({
                 url: '/courses'
             })
         }),
+
         getCoursesByAuthor: builder.query<CoursesResponse, void>({
             query: () => ({
                 url: `/courses/author/all`
-            })
+            }),
         }),
+
         createNewCourse: builder.mutation<Course, CreateCourseDTO>({
             query: (createCourseDTO) => ({
                 url: '/courses',
                 method: 'POST',
                 body: createCourseDTO
             })
-        })
+        }),
+
+        getCourseDetails: builder.query<CourseDetails, number>({
+            query: (courseId) => ({
+                url: `/courses/${courseId}/details`
+            }),
+            providesTags: ['CourseDetails']
+        }),
+
+        createEmptyChapter: builder.mutation<ChapterBase, NewChapterDTO>({
+            query: (newChapterDTO) => ({
+                url: `chapters/${newChapterDTO.courseId}`,
+                method: 'POST',
+                body: {
+                    title: newChapterDTO.title
+                }
+            }),
+            invalidatesTags: ['CourseDetails']
+        }),
+
+        createNewLesson: builder.mutation<Lesson, NewLessonDTO>({
+            query: (NewLessonDTO) => ({
+                url: `lessons/${NewLessonDTO.chapterId}`,
+                method: 'POST',
+                body: NewLessonDTO.LessonData
+            }),
+            invalidatesTags: ['CourseDetails']
+        }),
+
+        updateLessonsOrder: builder.mutation<void, UpdateLessonOrderDTO>({
+            query: (lessonIds) => ({
+                url: `lessons/order`,
+                method: 'PUT',
+                body: {
+                    lessonIds
+                }
+            }),
+            invalidatesTags: ['CourseDetails']
+        }),
+
+        getLessonById: builder.query<Lesson, number>({
+            query: (lessonId) => ({
+                url: `lessons/${lessonId}`
+            }),
+            providesTags: ['LessonDetails']
+        }),
     })
 })
 
@@ -57,5 +107,11 @@ export const {
     useSignInMutation,
     useGetCoursesListQuery,
     useCreateNewCourseMutation,
-    useGetCoursesByAuthorQuery
+    useGetCoursesByAuthorQuery,
+    useCreateEmptyChapterMutation,
+    useCreateNewLessonMutation,
+    useLazyGetCourseDetailsQuery,
+    useGetCourseDetailsQuery,
+    useUpdateLessonsOrderMutation,
+    useLazyGetLessonByIdQuery
 } = apiSchema;

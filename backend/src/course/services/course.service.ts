@@ -44,7 +44,14 @@ export class CourseService {
   async getCourseWithChaptersById(courseId: number): Promise<Course> {
     const course = await this.courseRepository.findOne({
       where: { id: courseId },
-      relations: ['chapters'],
+      relations: ['chapters', 'chapters.lessons'],
+      order: {
+        chapters: {
+          lessons: {
+            lessonNumber: 'ASC',
+          }
+        }
+      }
     });
     if (!course) {
       throw new NotFoundException(`Course with id ${courseId} doesn't exist`);
@@ -71,8 +78,6 @@ export class CourseService {
 
   async getCoursesByAuthor(authorId: number, page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
-
-    console.log('Whodzi tutaj');
 
     const [courses, total] = await this.courseRepository.findAndCount({
       where: {

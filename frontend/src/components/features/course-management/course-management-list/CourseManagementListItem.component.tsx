@@ -12,7 +12,7 @@ const CourseManagementListItem: FC<CourseListItemProps> = ({ course }) => {
     const navigate = useNavigate();
 
     return (
-        <ListGroup.Item onClick={() => navigate(RoutingConstants.COURSE_CREATION_DETAILS)}>
+        <ListGroup.Item onClick={() => navigate(RoutingConstants.COURSE_CREATION_DETAILS.replace(':courseId', course.id.toString()))}>
             <div className="flex flex-row gap-5">
                 <div>
                     <img src={course.thumbnail} className="w-40 aspect-square object-cover rounded-md" />

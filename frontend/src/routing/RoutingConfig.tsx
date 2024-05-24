@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { RoutingConstants } from './RoutingConstants';
 import UnauthenticatedOverlay from '../components/shared/unauthenticated-overlay/UnauthenticatedOverlay.component';
 import LoginPage from '../pages/login/LoginPage.component';
@@ -9,10 +9,11 @@ import Dashboard from '../pages/dashboard/Dashboard.component';
 import CourseListPage from '../pages/course-list/CourseListPage.component';
 import CourseManagementPage from '../pages/course-management/CourseManagementPage.component';
 import CourseCreationDetails from '../pages/course-creation-details/CourseCreationDetails.component';
+import EditLessonPage from '../pages/edit-lesson-page/EditLessonPage.component';
 
 export const routes = createBrowserRouter([
     {
-        path: RoutingConstants.STARTING,
+        path: '/',
         element: (
             <UnauthenticatedOverlay>
                 <Outlet />
@@ -56,6 +57,10 @@ export const routes = createBrowserRouter([
             {
                 path: RoutingConstants.COURSE_CREATION_DETAILS,
                 element: <CourseCreationDetails />
+            },
+            {
+                path: RoutingConstants.LESSON_EDITION,
+                element: <EditLessonPage />
             }
         ]
     }

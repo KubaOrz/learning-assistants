@@ -14,7 +14,8 @@ const CourseManagementPage: FC = () => {
 
     return (
         <div className="flex flex-col">
-            <div className="flex flex-row justify-end">
+            <div className="flex flex-row justify-between mb-6">
+                <h1 className="text-4xl">Zarządzaj swoimi kursami</h1>
                 <Button color="primary" className="flex items-center justify-center text-center gap-2" onClick={() => setShowNewCourseForm(true)}>
                     <LuPlusSquare />
                     Utwórz nowy kurs
@@ -33,7 +34,6 @@ const CourseManagementPage: FC = () => {
             {
                 data ? (
                     <div>
-                        <h1 className="text-2xl">Zarządzaj swoimi kursami</h1>
                         <CourseManagementList courses={data.courses} />
                     </div>
                 ) : null

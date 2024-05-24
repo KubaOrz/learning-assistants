@@ -7,12 +7,16 @@ import { Provider } from 'react-redux'
 import { store } from './redux/store.ts'
 import { Flowbite } from 'flowbite-react'
 import theme from './config/FlowbiteConfig.ts'
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <Flowbite theme={{ theme: theme }}>
-        <RouterProvider router={routes} />
+        <DndProvider backend={HTML5Backend}>
+          <RouterProvider router={routes} />
+        </DndProvider>
       </Flowbite>
     </Provider>
   </React.StrictMode>,
