@@ -1,4 +1,4 @@
-import { Button, Spinner } from "flowbite-react";
+import { Button, Modal, Spinner } from "flowbite-react";
 import { FC, useState } from "react";
 import { LuPlusSquare } from "react-icons/lu";
 import CreateCourseForm from "../../components/features/course-management/CreateCourseForm.component";
@@ -22,13 +22,6 @@ const CourseManagementPage: FC = () => {
                 </Button>
             </div>
             {
-                showNewCourseForm ? (
-                    <div>
-                        <CreateCourseForm />
-                    </div>
-                ) : null
-            }
-            {
                 isLoading ? <Spinner></Spinner> : null
             }
             {
@@ -41,6 +34,28 @@ const CourseManagementPage: FC = () => {
             {
                 isError ? <span className="text-error">Wystapił błąd</span> : null
             }
+            <Modal
+                show={showNewCourseForm}
+                size="lg"
+                popup={true}
+                onClose={() => setShowNewCourseForm(false)}
+            >
+                <Modal.Header>
+                    Dodaj nowy kurs
+                </Modal.Header>
+                <Modal.Body>
+                    <CreateCourseForm />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={() => setShowNewCourseForm(false)}
+                        color={'secondary'}
+                        outline
+                    >
+                        Anuluj
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }

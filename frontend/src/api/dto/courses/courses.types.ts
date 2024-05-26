@@ -63,3 +63,8 @@ export type UpdateLessonOrderDTO = {
         lessonNumber: number;
     }[]
 }
+
+export type UpdateLessonDTO = {
+    lessonId: number;
+    lessonData: Partial<LessonBase>;
+}

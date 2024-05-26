@@ -10,6 +10,8 @@ import CourseListPage from '../pages/course-list/CourseListPage.component';
 import CourseManagementPage from '../pages/course-management/CourseManagementPage.component';
 import CourseCreationDetails from '../pages/course-creation-details/CourseCreationDetails.component';
 import EditLessonPage from '../pages/edit-lesson-page/EditLessonPage.component';
+import LessonView from '../components/features/lesson-view/LessonView.component';
+import CoursePage from '../pages/course/CoursePage.component';
 
 export const routes = createBrowserRouter([
     {
@@ -61,6 +63,10 @@ export const routes = createBrowserRouter([
             {
                 path: RoutingConstants.LESSON_EDITION,
                 element: <EditLessonPage />
+            },
+            {
+                path: RoutingConstants.COURSE_PAGE,
+                element: <CoursePage />
             }
         ]
     }

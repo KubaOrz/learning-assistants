@@ -37,7 +37,7 @@ const CreateLessonForm: FC<CreateLessonFormProps> = ({ chapterId }) => {
     });
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-1/2 p-5 rounded-lg bg-base-100 bg-opacity-90">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full p-5 rounded-lg bg-base-100 bg-opacity-90">
             <TextInput 
                 placeholder='Tytuł lekcji' 
                 type="text" 
@@ -65,11 +65,6 @@ const CreateLessonForm: FC<CreateLessonFormProps> = ({ chapterId }) => {
             >
                 Dodaj Lekcję
             </Button>
-            {
-                errors && (
-                    <span className="text-error">Wystąpiły błędy w formularzu!</span>
-                )
-            }
             {
                 isError ? (
                     <span className="text-error">Nie udało się utworzyć nowego kursu!</span>

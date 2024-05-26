@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { AuthenticationData, SignInRequest, UserRegistrationDetails } from './dto/authentication/authentication.types'
-import { ChapterBase, Course, CourseDetails, CoursesResponse, CreateCourseDTO, Lesson, NewChapterDTO, NewLessonDTO, UpdateLessonOrderDTO } from './dto/courses/courses.types';
+import { ChapterBase, Course, CourseDetails, CoursesResponse, CreateCourseDTO, Lesson, NewChapterDTO, NewLessonDTO, UpdateLessonDTO, UpdateLessonOrderDTO } from './dto/courses/courses.types';
 
 export const apiSchema = createApi({
     reducerPath: 'api',
@@ -99,6 +99,40 @@ export const apiSchema = createApi({
             }),
             providesTags: ['LessonDetails']
         }),
+
+        updateLesson: builder.mutation<Lesson, UpdateLessonDTO>({
+            query: ({ lessonId, lessonData }) => ({
+                url: `lessons/${lessonId}`,
+                method: 'PATCH',
+                body: lessonData
+            }),
+            invalidatesTags: ['LessonDetails', 'CourseDetails']
+        }),
+
+        updateBasicCourseInfo: builder.mutation<Course, { courseId: number, courseData: CreateCourseDTO }>({
+            query: ({ courseId, courseData }) => ({
+                url: `courses/${courseId}`,
+                method: 'PUT',
+                body: courseData
+            }),
+            invalidatesTags: ['CourseDetails']
+        }),
+
+        deleteLesson: builder.mutation<void, number>({
+            query: (lessonId) => ({
+                url: `lessons/${lessonId}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['CourseDetails']
+        }),
+
+        deleteChapter: builder.mutation<void, number>({
+            query: (chapterId) => ({
+                url: `chapters/${chapterId}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['CourseDetails']
+        })
     })
 })
 
@@ -113,5 +147,9 @@ export const {
     useLazyGetCourseDetailsQuery,
     useGetCourseDetailsQuery,
     useUpdateLessonsOrderMutation,
-    useLazyGetLessonByIdQuery
+    useLazyGetLessonByIdQuery,
+    useUpdateLessonMutation,
+    useUpdateBasicCourseInfoMutation,
+    useDeleteLessonMutation,
+    useDeleteChapterMutation
 } = apiSchema;

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLazyGetCourseDetailsQuery } from "../../api/api.service";
-import { Accordion, AccordionContent, AccordionTitle, Button, Spinner } from "flowbite-react";
+import { Accordion, AccordionContent, AccordionTitle, Button, Modal, Spinner } from "flowbite-react";
 import ChapterLessonsList from "../../components/features/course-management/lesson-management/ChapterLessonsList.component";
 import CreateChapterForm from "../../components/features/course-management/CreateChapterForm.component";
 import CourseDetails from "../../components/features/course-management/course-details/CourseDetails.component";
@@ -38,8 +38,8 @@ const CourseCreationDetails: FC = () => {
                                             <div>
                                                 <h2 className="text-lg font-semibold">{chapter.title}</h2>
                                             </div>
-                                            <span className="text-md mr-10">Łączny czas trwania: {chapter.totalDurationMinutes} minut</span>
-                                            <span className="text-md">Liczba lekcji: {chapter.lessons.length}</span>
+                                            <span className="text-base mr-10">Łączny czas trwania: {chapter.totalDurationMinutes} minut</span>
+                                            <span className="text-base">Liczba lekcji: {chapter.lessons.length}</span>
                                         </AccordionTitle>
                                         <AccordionContent>
                                             <ChapterLessonsList chapterId={chapter.id} initialLessons={chapter.lessons} />
@@ -48,11 +48,33 @@ const CourseCreationDetails: FC = () => {
                                 ))
                             }
                         </Accordion>
-                        {
+                        {/* {
                             showChapterForm ? (
                                 <CreateChapterForm courseId={data.id} />
                             ) : null
-                        }
+                        } */}
+                        <Modal
+                            show={showChapterForm}
+                            size="lg"
+                            popup={true}
+                            onClose={() => setShowChapterForm(false)}
+                        >
+                            <Modal.Header>
+                                Dodaj nowy rozdział
+                            </Modal.Header>
+                            <Modal.Body>
+                                <CreateChapterForm courseId={data.id} />                            
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button
+                                    onClick={() => setShowChapterForm(false)}
+                                    color={'secondary'}
+                                    outline
+                                >
+                                    Anuluj
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </>
 
                 ) : null

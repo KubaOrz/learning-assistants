@@ -27,16 +27,10 @@ const CreateChapterForm: FC<CreateChapterFormProps> = ({ courseId }) => {
         console.log(data);
     };
 
-    // useEffect(() => {
-    //     if (isSuccess) {
-    //         navigate(RoutingConstants.COURSE_CREATION_DETAILS.replace(':courseId', courseId.toString()))
-    //     }
-    // }, [isSuccess]);
-
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-1/2 p-5 rounded-lg bg-base-100 bg-opacity-90">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full p-5 rounded-lg bg-base-100 bg-opacity-90">
             <TextInput 
-                placeholder='Tytuł lekcji' 
+                placeholder='Tytuł rozdziału' 
                 type="text" 
                 {...register('title')} 
                 color={errors.title?.message ? 'failure' : 'primary'}
@@ -49,11 +43,6 @@ const CreateChapterForm: FC<CreateChapterFormProps> = ({ courseId }) => {
             >
                 Dodaj Rozdział
             </Button>
-            {
-                errors && (
-                    <span className="text-error">Wystąpiły błędy w formularzu!</span>
-                )
-            }
             {
                 isError ? (
                     <span className="text-error">Nie udało się utworzyć nowego rozdziału!</span>

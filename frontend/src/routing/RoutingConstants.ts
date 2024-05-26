@@ -8,4 +8,5 @@ export const RoutingConstants = {
     COURSE_MANAGEMENT: '/learn/course_management',
     COURSE_CREATION_DETAILS: '/learn/course/edit/:courseId',
     LESSON_EDITION: '/learn/lesson/edit/:lessonId',
+    COURSE_PAGE: '/learn/course/:courseId'
 }

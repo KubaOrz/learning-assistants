@@ -8,6 +8,7 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { CourseService } from '../services/course.service';
 import { Course } from '../model/course.entity';
@@ -57,5 +58,13 @@ export class CourseController {
   ): Promise<Course> {
     const authorId = request.user.id;
     return await this.courseService.createCourse(createCourseDto, authorId);
+  }
+
+  @Put(':id')
+  async updateCourse(
+    @Param('id') id: number,
+    @Body() createCourseDto: CreateCourseRequest,
+  ): Promise<Course> {
+    return await this.courseService.updateCourse(id, createCourseDto);
   }
 }

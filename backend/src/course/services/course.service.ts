@@ -106,6 +106,21 @@ export class CourseService {
     return updatedCourse;
   }
 
+  async updateCourse(courseId: number, updateCourseDto: CreateCourseRequest): Promise<Course> {
+    const course = await this.courseRepository.findOneBy({ id: courseId });
+    if (!course) {
+      throw new NotFoundException('Course not found!');
+    }
+    const { title, shortDescription, thumbnail, longDescription } = updateCourseDto;
+    course.title = title;
+    course.shortDescription = shortDescription;
+    course.thumbnail = thumbnail;
+    course.longDescription = longDescription;
+
+    const updatedCourse = await this.courseRepository.save(course);
+    return updatedCourse;
+  }
+
   async isUserCourseAuthor(userId: number, courseId: number): Promise<boolean> {
     // TODO
     return true;

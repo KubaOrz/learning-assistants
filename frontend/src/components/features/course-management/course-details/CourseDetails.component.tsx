@@ -1,30 +1,51 @@
 import { FC } from "react";
-import { Course } from "../../../../api/dto/courses/courses.types";
-import { Button, FileInput, Label, TextInput, Textarea } from "flowbite-react";
+import { Course, CreateCourseDTO } from "../../../../api/dto/courses/courses.types";
+import { useForm } from "react-hook-form";
+import { Button, FileInput, Label, TextInput, Textarea, Toast } from "flowbite-react";
+import { useUpdateBasicCourseInfoMutation } from "../../../../api/api.service";
+import { HiCheck, HiX } from "react-icons/hi";
 
 type CourseDetailsProps = {
     course: Course;
 };
 
 const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
+    const { register, handleSubmit, setValue } = useForm({
+        defaultValues: {
+            title: course.title,
+            shortDescription: course.shortDescription,
+            longDescription: course.longDescription,
+            thumbnail: course.thumbnail
+        }
+    });
+    const [updateCourseBasicInfo, { isError, isSuccess, isLoading }] = useUpdateBasicCourseInfoMutation();
 
-    // TODO handle fileupload to amazon s3
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        console.log(file?.name);
+        if (file) {
+            console.log(file?.name);
+            // TODO handle file upload to amazon s3 and get the URL
+            const fileURL = 'https://i.ytimg.com/vi/OcwON22ctYc/maxresdefault.jpg'; // Replace with actual URL from S3
+            setValue('thumbnail', fileURL);
+        }
+    };
+
+    const onSubmit = (data: CreateCourseDTO) => {
+        console.log(data);
+        updateCourseBasicInfo({ courseId: course.id, courseData: data});
     };
 
     return (
         <div className="mx-auto p-6 bg-white shadow-md rounded-lg mb-4">
             <h1 className="text-2xl font-bold mb-4">Podstawowe informacje</h1>
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <Label htmlFor="title" className="block text-gray-700">Nazwa kursu</Label>
                     <TextInput
                         id="title"
                         type="text"
                         className="mt-1"
-                        defaultValue={course.title}
+                        {...register('title')}
                     />
                 </div>
                 <div>
@@ -32,7 +53,7 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
                     <Textarea
                         id="shortDescription"
                         className="mt-1"
-                        defaultValue={course.shortDescription}
+                        {...register('shortDescription')}
                     />
                 </div>
                 <div>
@@ -49,7 +70,7 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
                     <Textarea
                         id="longDescription"
                         className="mt-1"
-                        defaultValue={course.longDescription}
+                        {...register('longDescription')}
                         rows={5}
                     />
                 </div>
@@ -67,8 +88,32 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
                     </Button>
                 </div>
             </form>
+            <div className="fixed bottom-0 left-0 m-4">
+                {
+                    isSuccess ? (
+                        <Toast>
+                            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                                <HiCheck className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3 text-sm font-normal">Zmiany zostały zapisane</div>
+                            <Toast.Toggle />
+                        </Toast>
+                    ) : null
+                }
+                {
+                    isError ? (
+                        <Toast>
+                            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+                                <HiX className="h-5 w-5" />
+                            </div>
+                            <div className="ml-3 text-sm font-normal">Nie udało się zapisać zmian</div>
+                            <Toast.Toggle />
+                        </Toast>
+                    ) : null
+                }
+            </div>
         </div>
-    )
+    );
 }
 
 export default CourseDetails;

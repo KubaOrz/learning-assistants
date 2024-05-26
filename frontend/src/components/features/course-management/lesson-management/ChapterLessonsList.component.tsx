@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { Lesson } from "../../../../api/dto/courses/courses.types";
-import { Button, Toast } from "flowbite-react";
+import { Button, Modal, Toast } from "flowbite-react";
 import CreateLessonForm from "../CreateLessonForm.component";
 import { useDrag, useDrop } from 'react-dnd';
-import { HiCheck, HiX } from "react-icons/hi";
-import { useUpdateLessonsOrderMutation } from "../../../../api/api.service";
+import { HiCheck, HiOutlineExclamationCircle, HiX } from "react-icons/hi";
+import { useDeleteLessonMutation, useUpdateLessonsOrderMutation } from "../../../../api/api.service";
 import { RoutingConstants } from "../../../../routing/RoutingConstants";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,8 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
     const [orderChanged, setOrderChanged] = useState(false);
     const [updateLessonsOrder, { isLoading, isError, isSuccess }] = useUpdateLessonsOrderMutation();
     const navigate = useNavigate();
+    const [showDeleteLessonModal, setShowDeleteLessonModal] = useState(false);
+    const [deleteLesson] = useDeleteLessonMutation();
 
     const moveLesson = (dragIndex: number, hoverIndex: number) => {
         const draggedLesson = lessons[dragIndex];
@@ -48,10 +50,19 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
     }
 
     useEffect(() => {
-        if(isSuccess) {
+        if (isSuccess) {
             setOrderChanged(false);
         }
     }, [isSuccess])
+
+    useEffect(() => {
+        setLessons(initialLessons);
+    }, [initialLessons])
+
+    const handleDeleteLesson = (lessonId: number) => {
+        setShowDeleteLessonModal(false);
+        deleteLesson(lessonId);
+    }
 
     const LessonListItem: React.FC<{ lesson: Lesson; index: number }> = ({ lesson, index }) => {
         const [{ isDragging }, drag] = useDrag({
@@ -86,13 +97,13 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5s-GdgH4XPlGIDoQcZDMiSh32oN2TmPgz0mGoevc6Ow&s" alt="Lesson Thumbnail" className="w-12 h-12 rounded-full mr-2" />
-                                <h2 className="text-md font-semibold">{lesson.title}</h2>
+                                <h2 className="text-base font-semibold">{lesson.title}</h2>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Button size="xs" color="info" className="text-black" onClick={() => navigate(RoutingConstants.LESSON_EDITION.replace(':lessonId', lesson.id.toString()))}>
                                     Edytuj
                                 </Button>
-                                <Button size="xs" color="error">
+                                <Button size="xs" color="error" onClick={() => setShowDeleteLessonModal(true)}>
                                     Usuń
                                 </Button>
                             </div>
@@ -103,6 +114,25 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
                         </div>
                     </div>
                 </li>
+                <Modal show={showDeleteLessonModal} size="md" onClose={() => setShowDeleteLessonModal(false)} popup>
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                Czy na pewno chcesz usunąć lekcję {lesson.title}?
+                            </h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="failure" onClick={() => handleDeleteLesson(lesson.id)}>
+                                    Tak
+                                </Button>
+                                <Button color="gray" onClick={() => setShowDeleteLessonModal(false)}>
+                                    Nie
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </>
 
         );
@@ -127,12 +157,35 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
                     ) : null
                 }
             </div>
-            {
+            {/* {
                 showLessonForm ? (
                     <CreateLessonForm chapterId={chapterId} />
                 ) : null
-            }
-            {
+            } */}
+            <Modal
+                show={showLessonForm}
+                size="lg"
+                popup={true}
+                onClose={() => setShowLessonForm(false)}
+            >
+                <Modal.Header>
+                    Dodaj nową lekcję
+                </Modal.Header>
+                <Modal.Body>
+                    <CreateLessonForm chapterId={chapterId} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={() => setShowLessonForm(false)}
+                        color={'secondary'}
+                        outline
+                    >
+                        Anuluj
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <div className="fixed bottom-0 left-0 m-4">
+                {
                     isSuccess ? (
                         <Toast>
                             <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
@@ -154,6 +207,7 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
                         </Toast>
                     ) : null
                 }
+            </div>
         </div>
     );
 };
