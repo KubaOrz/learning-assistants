@@ -2,15 +2,14 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z, object } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextInput, Button, Textarea, FileInput, Label } from 'flowbite-react';
-import { useNavigate } from 'react-router-dom';
+import { TextInput, Button, Textarea, FileInput, Label, Progress } from 'flowbite-react';
 import { CreateCourseDTO } from '../../../api/dto/courses/courses.types';
 import { useCreateNewCourseMutation } from '../../../api/api.service';
-import { RoutingConstants } from '../../../routing/RoutingConstants';
+import useUploadMedia from '../../../hooks/useUploadMedia';
 
 const schema = object({
     title: z.string().min(1, { message: "Wprowadź tytuł kursu" }),
-    thumbnail: z.string().url({ message: "Wprowadź prawidłowy URL miniaturki" }),
+    thumbnail: z.string().min(1, { message: "Wprowadź prawidłowy URL miniaturki" }),
     shortDescription: z.string().min(1, { message: "Wprowadź krótki opis kursu" }),
     longDescription: z.string().min(1, { message: "Wprowadź długi opis kursu" }),
 });
@@ -19,27 +18,27 @@ const CreateCourseForm = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<CreateCourseDTO>({
         resolver: zodResolver(schema),
     });
-    const [createNewCourse, { isError, isLoading, isSuccess }] = useCreateNewCourseMutation();
-    const navigate = useNavigate();
+    const [createNewCourse, { isError, isLoading }] = useCreateNewCourseMutation();
+    const { uploadMedia, objectKey, uploadProgress, isUploading } = useUploadMedia();
 
     const onSubmit = (data: CreateCourseDTO) => {
         createNewCourse(data);
         console.log(data);
     };
 
-    useEffect(() => {
-        if (isSuccess) {
-            navigate(RoutingConstants.COURSE_CREATION_DETAILS);
-        }
-    }, [isSuccess]);
-
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            const mockUrl = "https://con.jaktestowac.pl/wp-content/uploads/API/title-pages/api6-1.jpg";
-            setValue('thumbnail', mockUrl);
+            uploadMedia(file);
         }
     };
+
+    useEffect(() => {
+        if (objectKey) {
+            console.log(objectKey);
+            setValue('thumbnail', objectKey)
+        }
+    }, [objectKey])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full p-5 rounded-lg bg-base-100 bg-opacity-90">
@@ -63,6 +62,11 @@ const CreateCourseForm = () => {
                     color={errors.thumbnail?.message ? 'failure' : 'primary'}
                     helperText={errors.thumbnail?.message ? <span className="text-error">{errors.thumbnail.message}</span> : ''}
                 />
+                {
+                    isUploading && (
+                        <Progress progress={uploadProgress} color="Green" className='w-full mt-2' />
+                    )
+                }
             </div>
             <div>
                 <Label htmlFor="shortDescription" className="block text-gray-700">Krótki opis</Label>
@@ -88,14 +92,10 @@ const CreateCourseForm = () => {
                 type="submit" 
                 color="primary"
                 isProcessing={isLoading}
+                disabled={isUploading}
             >
                 Dodaj kurs
             </Button>
-            {
-                errors && (
-                    <span className="text-error">Wystąpiły błędy w formularzu!</span>
-                )
-            }
             {
                 isError ? (
                     <span className="text-error">Nie udało się utworzyć nowego kursu!</span>

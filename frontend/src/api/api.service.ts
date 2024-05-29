@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { AuthenticationData, SignInRequest, UserRegistrationDetails } from './dto/authentication/authentication.types'
 import { ChapterBase, Course, CourseDetails, CoursesResponse, CreateCourseDTO, Lesson, NewChapterDTO, NewLessonDTO, UpdateLessonDTO, UpdateLessonOrderDTO } from './dto/courses/courses.types';
+import { SignedResponse } from './dto/aws/aws.types';
 
 export const apiSchema = createApi({
     reducerPath: 'api',
-    tagTypes: ['CourseDetails', 'LessonDetails'],
+    tagTypes: ['CourseDetails', 'LessonDetails', 'AuthorCourses'],
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:3000',
         prepareHeaders: (headers) => {
@@ -38,13 +39,14 @@ export const apiSchema = createApi({
         getCoursesList: builder.query<CoursesResponse, void>({
             query: () => ({
                 url: '/courses'
-            })
+            }),
         }),
 
         getCoursesByAuthor: builder.query<CoursesResponse, void>({
             query: () => ({
                 url: `/courses/author/all`
             }),
+            providesTags: ['AuthorCourses']
         }),
 
         createNewCourse: builder.mutation<Course, CreateCourseDTO>({
@@ -52,7 +54,8 @@ export const apiSchema = createApi({
                 url: '/courses',
                 method: 'POST',
                 body: createCourseDTO
-            })
+            }),
+            invalidatesTags: ['AuthorCourses']
         }),
 
         getCourseDetails: builder.query<CourseDetails, number>({
@@ -132,6 +135,12 @@ export const apiSchema = createApi({
                 method: 'DELETE'
             }),
             invalidatesTags: ['CourseDetails']
+        }),
+
+        getS3SignedUrl: builder.query<SignedResponse, string>({
+            query: (contentType) => ({
+                url: `/aws/getSignedUrl?contentType=${contentType}`
+            })
         })
     })
 })
@@ -151,5 +160,6 @@ export const {
     useUpdateLessonMutation,
     useUpdateBasicCourseInfoMutation,
     useDeleteLessonMutation,
-    useDeleteChapterMutation
+    useDeleteChapterMutation,
+    useLazyGetS3SignedUrlQuery
 } = apiSchema;

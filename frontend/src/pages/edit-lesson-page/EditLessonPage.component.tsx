@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, FileInput, Label, Spinner, TextInput, Toast } from "flowbite-react";
+import { Button, FileInput, Label, Progress, Spinner, TextInput, Toast } from "flowbite-react";
 import { useLazyGetLessonByIdQuery, useUpdateLessonMutation } from "../../api/api.service";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useForm, Controller } from 'react-hook-form';
 import { HiCheck, HiX } from "react-icons/hi";
+import useUploadMedia from "../../hooks/useUploadMedia";
 
 const editorModules = {
     toolbar: [
@@ -24,6 +25,7 @@ const EditLessonPage = () => {
     const [getLesson, { data: lesson, isLoading, isError }] = useLazyGetLessonByIdQuery();
     const { register, handleSubmit, control, setValue, getValues } = useForm();
     const [editorValue, setEditorValue] = useState('');
+    const { uploadMedia, objectKey, uploadProgress, isUploading } = useUploadMedia();
     const [updateLesson, { isLoading: isUpdating, isError: updateError, isSuccess: updateSuccess }] = useUpdateLessonMutation();
 
     useEffect(() => {
@@ -44,8 +46,7 @@ const EditLessonPage = () => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            const newVideoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-            setValue('videoUrl', newVideoUrl);
+            uploadMedia(file);
         }
     };
 
@@ -55,6 +56,13 @@ const EditLessonPage = () => {
             updateLesson({ lessonId: parseInt(lessonId), lessonData: data })
         }
     };
+
+    useEffect(() => {
+        if (objectKey) {
+            setValue('videoUrl', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`);
+            console.log(`${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`);
+        }
+    }, [objectKey])
 
     return (
         <>
@@ -79,6 +87,11 @@ const EditLessonPage = () => {
                                     className="mt-1"
                                     onChange={handleFileChange}
                                 />
+                                {
+                                    isUploading && (
+                                        <Progress progress={uploadProgress} color="purple" className='w-full mt-2' />
+                                    )
+                                }
                                 {getValues('videoUrl') && (
                                     <video controls className="mt-2 w-full">
                                         <source src={getValues('videoUrl')} type="video/mp4" />
@@ -107,7 +120,7 @@ const EditLessonPage = () => {
                                 />
                             </div>
                             <div className="flex justify-end">
-                                <Button type="submit" color="primary" isProcessing={isUpdating}>
+                                <Button type="submit" color="primary" isProcessing={isUpdating} disabled={isUploading}>
                                     Zapisz zmiany
                                 </Button>
                             </div>
