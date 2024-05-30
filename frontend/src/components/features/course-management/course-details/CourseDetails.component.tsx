@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Course, CreateCourseDTO } from "../../../../api/dto/courses/courses.types";
 import { useForm } from "react-hook-form";
 import { Button, FileInput, Label, Progress, TextInput, Textarea, Toast } from "flowbite-react";
@@ -19,13 +19,14 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
             thumbnail: course.thumbnail
         }
     });
-    const [updateCourseBasicInfo, { isError, isSuccess, isLoading }] = useUpdateBasicCourseInfoMutation();
-    const { uploadMedia, objectKey, uploadProgress, isUploading } = useUploadMedia();
+    const [updateCourseBasicInfo, { isError, isSuccess }] = useUpdateBasicCourseInfoMutation();
+    const { uploadMedia, uploadProgress, isUploading } = useUploadMedia();
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            uploadMedia(file);
+            const objectKey = await uploadMedia(file);
+            if (objectKey) setValue('thumbnail', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`)
         }
     };
 
@@ -33,13 +34,6 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
         console.log(data);
         updateCourseBasicInfo({ courseId: course.id, courseData: data });
     };
-
-    useEffect(() => {
-        if (objectKey) {
-            console.log(objectKey);
-            setValue('thumbnail', objectKey)
-        }
-    }, [objectKey])
 
     return (
         <div className="mx-auto p-6 bg-white shadow-md rounded-lg mb-4">

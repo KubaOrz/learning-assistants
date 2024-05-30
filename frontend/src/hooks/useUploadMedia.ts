@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLazyGetS3SignedUrlQuery } from "../api/api.service";
 
 const useUploadMedia = () => {
-    const [objectKey, setObjectKey] = useState<string | null>(null);
-    const [getSignedUrl, { data: presignedUrl }] = useLazyGetS3SignedUrlQuery();
-    const [file, setFile] = useState<File | null>(null);
+    const [getSignedUrl] = useLazyGetS3SignedUrlQuery();
     const [uploadProgress, setUploadProgress] = useState<number>(0);
     const [isUploading, setIsUploading] = useState<boolean>(false);
 
-    const uploadMedia = (file: File) => {
+    const uploadMedia = async (file: File) => {
         const fileType = encodeURIComponent(file.type);
-        setFile(file);
-        getSignedUrl(fileType);
+        const { data } = await getSignedUrl(fileType);
+        if (data && file) {
+            await uploadFileToS3(data.url, file).catch((error) => {
+                console.error("Error in uploadFileToS3:", error);
+            });
+            return data.objectKey;
+        }
+
+        return null;
     };
 
     const uploadFileToS3 = (url: string, file: File) => {
@@ -33,9 +38,6 @@ const useUploadMedia = () => {
             xhr.onload = () => {
                 if (xhr.status === 200) {
                     setIsUploading(false);
-                    if (presignedUrl) {
-                        setObjectKey(presignedUrl.objectKey);
-                    }
                     resolve();
                 } else {
                     console.error("Failed to upload file:", xhr.statusText);
@@ -52,15 +54,7 @@ const useUploadMedia = () => {
         });
     };
 
-    useEffect(() => {
-        if (presignedUrl && file) {
-            uploadFileToS3(presignedUrl.url, file).catch((error) => {
-                console.error("Error in uploadFileToS3:", error);
-            });
-        }
-    }, [presignedUrl]);
-
-    return { uploadMedia, objectKey, uploadProgress, isUploading };
+    return { uploadMedia, uploadProgress, isUploading };
 };
 
 export default useUploadMedia;

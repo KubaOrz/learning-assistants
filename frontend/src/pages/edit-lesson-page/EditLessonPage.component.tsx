@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, FileInput, Label, Progress, Spinner, TextInput, Toast } from "flowbite-react";
 import { useLazyGetLessonByIdQuery, useUpdateLessonMutation } from "../../api/api.service";
@@ -25,8 +25,9 @@ const EditLessonPage = () => {
     const [getLesson, { data: lesson, isLoading, isError }] = useLazyGetLessonByIdQuery();
     const { register, handleSubmit, control, setValue, getValues } = useForm();
     const [editorValue, setEditorValue] = useState('');
-    const { uploadMedia, objectKey, uploadProgress, isUploading } = useUploadMedia();
+    const { uploadMedia, uploadProgress, isUploading } = useUploadMedia();
     const [updateLesson, { isLoading: isUpdating, isError: updateError, isSuccess: updateSuccess }] = useUpdateLessonMutation();
+    const quillRef = useRef<ReactQuill>(null);
 
     useEffect(() => {
         if (lessonId) {
@@ -43,10 +44,11 @@ const EditLessonPage = () => {
         }
     }, [lesson, setValue]);
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            uploadMedia(file);
+            const objectKey = await uploadMedia(file);
+            if (objectKey) setValue('videoUrl', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`)
         }
     };
 
@@ -57,12 +59,31 @@ const EditLessonPage = () => {
         }
     };
 
+    const handleImageUpload = () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files ? input.files[0] : null;
+            if (file) {
+                const objectKey = await uploadMedia(file);
+                const quill = quillRef.current?.getEditor();
+                if (!quill) return;
+                const range = quill.getSelection();
+                if (!range) return;
+                quill.insertEmbed(range.index, 'image', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`);
+            }
+        };
+    };
+
     useEffect(() => {
-        if (objectKey) {
-            setValue('videoUrl', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`);
-            console.log(`${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`);
+        if (quillRef.current) {
+            const editor = quillRef.current.getEditor();
+            editor.getModule('toolbar').addHandler('image', handleImageUpload);
         }
-    }, [objectKey])
+    })
 
     return (
         <>
@@ -107,6 +128,7 @@ const EditLessonPage = () => {
                                     defaultValue={lesson.content}
                                     render={({ field }) => (
                                         <ReactQuill
+                                            ref={quillRef}
                                             theme="snow"
                                             value={editorValue}
                                             onChange={(value) => {

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z, object } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,26 +18,20 @@ const CreateCourseForm = () => {
         resolver: zodResolver(schema),
     });
     const [createNewCourse, { isError, isLoading }] = useCreateNewCourseMutation();
-    const { uploadMedia, objectKey, uploadProgress, isUploading } = useUploadMedia();
+    const { uploadMedia, uploadProgress, isUploading } = useUploadMedia();
 
     const onSubmit = (data: CreateCourseDTO) => {
         createNewCourse(data);
         console.log(data);
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            uploadMedia(file);
+            const objectKey = await uploadMedia(file);
+            if (objectKey) setValue('thumbnail', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`)
         }
     };
-
-    useEffect(() => {
-        if (objectKey) {
-            console.log(objectKey);
-            setValue('thumbnail', objectKey)
-        }
-    }, [objectKey])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 w-full p-5 rounded-lg bg-base-100 bg-opacity-90">
