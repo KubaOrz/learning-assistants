@@ -1,9 +1,10 @@
 import { FC } from "react";
 import { Course, CreateCourseDTO } from "../../../../api/dto/courses/courses.types";
 import { useForm } from "react-hook-form";
-import { Button, FileInput, Label, TextInput, Textarea, Toast } from "flowbite-react";
+import { Button, FileInput, Label, Progress, TextInput, Textarea, Toast } from "flowbite-react";
 import { useUpdateBasicCourseInfoMutation } from "../../../../api/api.service";
 import { HiCheck, HiX } from "react-icons/hi";
+import useUploadMedia from "../../../../hooks/useUploadMedia";
 
 type CourseDetailsProps = {
     course: Course;
@@ -18,21 +19,20 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
             thumbnail: course.thumbnail
         }
     });
-    const [updateCourseBasicInfo, { isError, isSuccess, isLoading }] = useUpdateBasicCourseInfoMutation();
+    const [updateCourseBasicInfo, { isError, isSuccess }] = useUpdateBasicCourseInfoMutation();
+    const { uploadMedia, uploadProgress, isUploading } = useUploadMedia();
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            console.log(file?.name);
-            // TODO handle file upload to amazon s3 and get the URL
-            const fileURL = 'https://i.ytimg.com/vi/OcwON22ctYc/maxresdefault.jpg'; // Replace with actual URL from S3
-            setValue('thumbnail', fileURL);
+            const objectKey = await uploadMedia(file);
+            if (objectKey) setValue('thumbnail', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`)
         }
     };
 
     const onSubmit = (data: CreateCourseDTO) => {
         console.log(data);
-        updateCourseBasicInfo({ courseId: course.id, courseData: data});
+        updateCourseBasicInfo({ courseId: course.id, courseData: data });
     };
 
     return (
@@ -64,6 +64,11 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
                         onChange={handleFileChange}
                     />
                     {course.thumbnail && <img src={course.thumbnail} alt="Thumbnail Preview" className="mt-2 w-24 h-24 object-cover" />}
+                    {
+                        isUploading && (
+                            <Progress progress={uploadProgress} color="Green" className='w-full mt-2' />
+                        )
+                    }
                 </div>
                 <div>
                     <Label htmlFor="longDescription" className="block text-gray-700">Dłuższy opis</Label>

@@ -12,7 +12,7 @@ export class Lesson {
   @Column()
   durationMinutes: number;
 
-  @Column()
+  @Column({ nullable: true })
   videoUrl: string;
 
   @Column()

@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { UserService } from './user/services/user.service';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CourseModule } from './course/course.module';
       inject: [ConfigService],
     }),
     CourseModule,
+    AwsModule,
   ],
 })
 export class AppModule {}

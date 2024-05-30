@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, FileInput, Label, Spinner, TextInput, Toast } from "flowbite-react";
+import { Button, FileInput, Label, Progress, Spinner, TextInput, Toast } from "flowbite-react";
 import { useLazyGetLessonByIdQuery, useUpdateLessonMutation } from "../../api/api.service";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useForm, Controller } from 'react-hook-form';
 import { HiCheck, HiX } from "react-icons/hi";
+import useUploadMedia from "../../hooks/useUploadMedia";
 
 const editorModules = {
     toolbar: [
@@ -24,7 +25,9 @@ const EditLessonPage = () => {
     const [getLesson, { data: lesson, isLoading, isError }] = useLazyGetLessonByIdQuery();
     const { register, handleSubmit, control, setValue, getValues } = useForm();
     const [editorValue, setEditorValue] = useState('');
+    const { uploadMedia, uploadProgress, isUploading } = useUploadMedia();
     const [updateLesson, { isLoading: isUpdating, isError: updateError, isSuccess: updateSuccess }] = useUpdateLessonMutation();
+    const quillRef = useRef<ReactQuill>(null);
 
     useEffect(() => {
         if (lessonId) {
@@ -41,11 +44,11 @@ const EditLessonPage = () => {
         }
     }, [lesson, setValue]);
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            const newVideoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-            setValue('videoUrl', newVideoUrl);
+            const objectKey = await uploadMedia(file);
+            if (objectKey) setValue('videoUrl', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`)
         }
     };
 
@@ -55,6 +58,32 @@ const EditLessonPage = () => {
             updateLesson({ lessonId: parseInt(lessonId), lessonData: data })
         }
     };
+
+    const handleImageUpload = () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files ? input.files[0] : null;
+            if (file) {
+                const objectKey = await uploadMedia(file);
+                const quill = quillRef.current?.getEditor();
+                if (!quill) return;
+                const range = quill.getSelection();
+                if (!range) return;
+                quill.insertEmbed(range.index, 'image', `${import.meta.env.VITE_CLOUDFRONT_URL}/${objectKey}`);
+            }
+        };
+    };
+
+    useEffect(() => {
+        if (quillRef.current) {
+            const editor = quillRef.current.getEditor();
+            editor.getModule('toolbar').addHandler('image', handleImageUpload);
+        }
+    })
 
     return (
         <>
@@ -79,6 +108,11 @@ const EditLessonPage = () => {
                                     className="mt-1"
                                     onChange={handleFileChange}
                                 />
+                                {
+                                    isUploading && (
+                                        <Progress progress={uploadProgress} color="purple" className='w-full mt-2' />
+                                    )
+                                }
                                 {getValues('videoUrl') && (
                                     <video controls className="mt-2 w-full">
                                         <source src={getValues('videoUrl')} type="video/mp4" />
@@ -94,6 +128,7 @@ const EditLessonPage = () => {
                                     defaultValue={lesson.content}
                                     render={({ field }) => (
                                         <ReactQuill
+                                            ref={quillRef}
                                             theme="snow"
                                             value={editorValue}
                                             onChange={(value) => {
@@ -107,7 +142,7 @@ const EditLessonPage = () => {
                                 />
                             </div>
                             <div className="flex justify-end">
-                                <Button type="submit" color="primary" isProcessing={isUpdating}>
+                                <Button type="submit" color="primary" isProcessing={isUpdating} disabled={isUploading}>
                                     Zapisz zmiany
                                 </Button>
                             </div>

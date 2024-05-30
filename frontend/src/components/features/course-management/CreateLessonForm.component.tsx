@@ -8,7 +8,6 @@ import { useCreateNewLessonMutation } from '../../../api/api.service';
 
 const schema = object({
     title: z.string().min(1, { message: "Wprowadź tytuł lekcji" }),
-    videoUrl: z.string().url({ message: "Wprowadź prawidłowy URL wideo" }),
     content: z.string().min(1, { message: "Dodaj opis lekcji" }),
 });
 
@@ -45,15 +44,8 @@ const CreateLessonForm: FC<CreateLessonFormProps> = ({ chapterId }) => {
                 color={errors.title?.message ? 'failure' : 'primary'}
                 helperText={errors.title?.message ? <span className="text-error">{errors.title.message}</span> : ''}
             />
-            <TextInput 
-                placeholder='URL wideo' 
-                type="text" 
-                {...register('videoUrl')} 
-                color={errors.videoUrl?.message ? 'failure' : 'primary'}
-                helperText={errors.videoUrl?.message ? <span className="text-error">{errors.videoUrl.message}</span> : ''}
-            />
             <Textarea 
-                placeholder='Krótki opis kursu' 
+                placeholder='Krótki opis lekcji' 
                 {...register('content')} 
                 color={errors.content?.message ? 'failure' : 'primary'} 
                 helperText={errors.content?.message ? <span className="text-error">{errors.content.message}</span> : ''}
