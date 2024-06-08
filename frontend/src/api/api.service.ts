@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { AuthenticationData, SignInRequest, UserRegistrationDetails } from './dto/authentication/authentication.types'
 import { ChapterBase, Course, CourseDetails, CoursesResponse, CreateCourseDTO, Lesson, NewChapterDTO, NewLessonDTO, UpdateLessonDTO, UpdateLessonOrderDTO } from './dto/courses/courses.types';
 import { SignedResponse } from './dto/aws/aws.types';
+import { Assistant } from './dto/assistants/assistants.types';
 
 export const apiSchema = createApi({
     reducerPath: 'api',
@@ -141,6 +142,26 @@ export const apiSchema = createApi({
             query: (contentType) => ({
                 url: `/aws/getSignedUrl?contentType=${contentType}`
             })
+        }),
+
+        enableAssistant: builder.mutation<void, string>({
+            query: (courseId) => ({
+                url: `/openai/${courseId}`,
+                method: 'POST'
+            })
+        }),
+
+        disableAssistant: builder.mutation<void, string>({
+            query: (courseId) => ({
+                url: `/openai/disable/${courseId}`,
+                method: 'POST'
+            })
+        }),
+
+        getAssistant: builder.query<Assistant, string>({
+            query: (courseId) => ({
+                url: `/openai/${courseId}`
+            })
         })
     })
 })
@@ -161,5 +182,8 @@ export const {
     useUpdateBasicCourseInfoMutation,
     useDeleteLessonMutation,
     useDeleteChapterMutation,
-    useLazyGetS3SignedUrlQuery
+    useLazyGetS3SignedUrlQuery,
+    useEnableAssistantMutation,
+    useDisableAssistantMutation,
+    useLazyGetAssistantQuery
 } = apiSchema;
