@@ -33,7 +33,7 @@ const CoursePage: FC = () => {
                 course && (
                     <div className="flex gap-6">
                         <TableOfContents course={course} selectLesson={selectLesson} />
-                        <LessonView lesson={selectedLesson} />
+                        <LessonView lesson={selectedLesson} courseId={course.id} />
                     </div>
                 )
             }

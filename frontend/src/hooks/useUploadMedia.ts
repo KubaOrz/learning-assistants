@@ -27,9 +27,7 @@ const useUploadMedia = () => {
             xhr.setRequestHeader("Content-Type", file.type);
 
             xhr.upload.onprogress = (event) => {
-                console.log('mamy progress');
                 if (event.lengthComputable) {
-                    console.log(event);
                     const progress = (event.loaded / event.total) * 100;
                     setUploadProgress(progress);
                 }

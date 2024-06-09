@@ -162,6 +162,13 @@ export const apiSchema = createApi({
             query: (courseId) => ({
                 url: `/openai/${courseId}`
             })
+        }),
+
+        createNewChat: builder.mutation<{chatId: number}, number>({
+            query: (courseId) => ({
+                url: `/openai/chat/create/${courseId}`,
+                method: 'POST'
+            })
         })
     })
 })
@@ -185,5 +192,6 @@ export const {
     useLazyGetS3SignedUrlQuery,
     useEnableAssistantMutation,
     useDisableAssistantMutation,
-    useLazyGetAssistantQuery
+    useLazyGetAssistantQuery,
+    useCreateNewChatMutation
 } = apiSchema;

@@ -31,7 +31,6 @@ const CourseDetails: FC<CourseDetailsProps> = ({ course }) => {
     };
 
     const onSubmit = (data: CreateCourseDTO) => {
-        console.log(data);
         updateCourseBasicInfo({ courseId: course.id, courseData: data });
     };
 

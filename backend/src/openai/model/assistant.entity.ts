@@ -1,5 +1,6 @@
 import { Course } from 'src/course/model/course.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Chat } from './chat.entity';
 
 @Entity()
 export class Assistant {
@@ -18,4 +19,7 @@ export class Assistant {
   @OneToOne(() => Course)
   @JoinColumn()
   course: Course;
+
+  @OneToMany(() => Chat, chat => chat.assistant)
+  chats: Chat[];
 }

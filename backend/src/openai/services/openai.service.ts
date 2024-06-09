@@ -7,6 +7,7 @@ import { Course } from 'src/course/model/course.entity';
 import { CourseService } from 'src/course/services/course.service';
 import OpenAI, { toFile } from "openai";
 import { promises as fs } from 'fs';
+import { Thread } from 'openai/resources/beta/threads/threads';
 
 @Injectable()
 export class OpenAIService {
@@ -41,7 +42,6 @@ export class OpenAIService {
         const courseDetails = await this.courseService.getCourseWithChaptersById(courseId);
 
         const fileIds = await this.generateCourseContentsFiles(courseDetails);
-        console.log(fileIds);
         const vectorStore = await this.createVectorStore(fileIds, 'Test vector store');
 
         const instructions = 'Twoim zadaniem jest wspieranie kursanta w nauce w obrębie kursu na podstawie materiałów z tego kursu';
@@ -71,7 +71,33 @@ export class OpenAIService {
         }
 
         return assistant;
-      }
+    }
+
+    async createEmptyThread(): Promise<Thread> {
+        const emptyThread = await this.openAI.beta.threads.create();
+        return emptyThread;
+    }
+
+    async createRunStream(assistantId: string, threadId: string) {
+        const stream = await this.openAI.beta.threads.runs.create(
+            threadId,
+            { assistant_id: assistantId, stream: true }
+        );
+
+        return stream;
+    }
+
+    async addMessageToThread(threadId: string, content: string) {
+        const message = await this.openAI.beta.threads.messages.create(
+            threadId,
+            {
+                role: "user",
+                content: content
+            }
+        );
+
+        return message;
+    }
 
     private async generateCourseContentsFiles(courseDetails: Course): Promise<string[]> {
         const fileIds = [];
@@ -91,7 +117,6 @@ export class OpenAIService {
                         purpose: "assistants",
                     });
 
-                    console.log(file);
                     fileIds.push(file.id);
                 } catch (error) {
                     console.error('Błąd podczas operacji na pliku:', error);

@@ -22,7 +22,6 @@ const CreateCourseForm = () => {
 
     const onSubmit = (data: CreateCourseDTO) => {
         createNewCourse(data);
-        console.log(data);
     };
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {

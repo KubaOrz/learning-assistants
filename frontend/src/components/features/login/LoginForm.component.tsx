@@ -26,7 +26,6 @@ const LoginForm = () => {
 
     const onSubmit = (data: FormValues) => {
         signIn(data)
-        console.log(data);
     };
 
     useEffect(() => {
@@ -57,7 +56,7 @@ const LoginForm = () => {
                 color="primary"
                 isProcessing={isLoading}
             >
-                Zarejestruj się
+                Zaloguj się
             </Button>
             {
                 isError ? (

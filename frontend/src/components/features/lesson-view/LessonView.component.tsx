@@ -1,12 +1,13 @@
 import { FC } from "react";
 import { Lesson } from "../../../api/dto/courses/courses.types";
-import { Spinner } from "flowbite-react";
+import AssistantChat from "../assistant-chat/AssistantChat.component";
 
 type LessonViewProps = {
     lesson: Lesson | null;
+    courseId: number
 }
 
-const LessonView: FC<LessonViewProps> = ({ lesson }) => {
+const LessonView: FC<LessonViewProps> = ({ lesson, courseId }) => {
     if (!lesson) {
         return <h1>Ten kurs jest pusty!</h1>
     }
@@ -21,6 +22,7 @@ const LessonView: FC<LessonViewProps> = ({ lesson }) => {
                 </video>
             </div>
             <div className="border border-gray-300 rounded-md p-6" dangerouslySetInnerHTML={{ __html: lesson.content }} />
+            <AssistantChat courseId={courseId} />
         </div>
     )
 }
