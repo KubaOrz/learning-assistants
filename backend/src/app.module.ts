@@ -6,6 +6,7 @@ import { UserService } from './user/services/user.service';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { AwsModule } from './aws/aws.module';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AwsModule } from './aws/aws.module';
     }),
     CourseModule,
     AwsModule,
+    OpenaiModule,
   ],
 })
 export class AppModule {}

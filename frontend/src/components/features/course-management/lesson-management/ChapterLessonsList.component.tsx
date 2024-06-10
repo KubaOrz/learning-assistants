@@ -33,7 +33,6 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
             lessonNumber: index + 1,
         }));
 
-        console.log(updatedLessons);
         setLessons(updatedLessons);
         setOrderChanged(true);
     };
@@ -45,7 +44,6 @@ const ChapterLessonsList: FC<ChapterLessonsListProps> = ({ chapterId, initialLes
                 lessonNumber: index + 1
             }
         });
-        console.log(lessonIds);
         updateLessonsOrder({ lessonIds: lessonIds });
     }
 

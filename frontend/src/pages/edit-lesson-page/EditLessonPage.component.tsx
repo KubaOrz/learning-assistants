@@ -53,7 +53,6 @@ const EditLessonPage = () => {
     };
 
     const onSubmit = (data: any) => {
-        console.log(data);
         if (lessonId) {
             updateLesson({ lessonId: parseInt(lessonId), lessonData: data })
         }

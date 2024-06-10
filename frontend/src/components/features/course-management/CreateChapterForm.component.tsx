@@ -24,7 +24,6 @@ const CreateChapterForm: FC<CreateChapterFormProps> = ({ courseId }) => {
 
     const onSubmit = (data: { title: string }) => {
         createEmptyChapter({ title: data.title, courseId: courseId})
-        console.log(data);
     };
 
     return (

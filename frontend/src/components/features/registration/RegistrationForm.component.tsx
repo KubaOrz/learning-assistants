@@ -32,7 +32,6 @@ const RegistrationForm = () => {
             dispatch(setAuthenticationData(authData));
             navigate(RoutingConstants.DASHBOARD);
         }
-        console.log(data);
     };
 
     return (

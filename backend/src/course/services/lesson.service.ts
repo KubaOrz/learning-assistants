@@ -99,22 +99,14 @@ export class LessonService {
   async updateLessonOrder(
     lessonIds: UpdateLessonOrderDTO,
   ): Promise<void> {
-    console.log(lessonIds);
     const ids = lessonIds.lessonIds.map(lesson => lesson.id);
-    console.log(ids);
     const lessons = await this.lessonRepository.findBy({ id: In(ids) })
 
-    console.log(lessons);
-
     lessons.forEach((lesson) => {
-      console.log(lesson);
       lesson.lessonNumber = lessonIds.lessonIds.find(l => l.id === lesson.id).lessonNumber;
     });
 
-    console.log(lessons);
-
     const savedLessons = await this.lessonRepository.save(lessons);
-    console.log(savedLessons);
     return;
   }
 
